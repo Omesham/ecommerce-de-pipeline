@@ -1,0 +1,42 @@
+version: "3.9"
+
+x-build: &build
+  context: .
+  dockerfile: docker/Dockerfile
+
+services:
+  # One-shot: runs the full pipeline (ingest -> load -> dbt build) then exits.
+  # Run this first: docker compose run --rm pipeline
+  pipeline:
+    build: *build
+    volumes:
+      - ./data:/app/data
+    command: >
+      bash -c "
+      python ingestion/generate_source_data.py &&
+      python ingestion/load_to_warehouse.py &&
+      cd dbt_project && dbt snapshot && dbt build
+      "
+
+  # Dagster UI for browsing asset lineage, run history, and triggering runs.
+  dagster:
+    build: *build
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./data:/app/data
+      - ./.dagster_home:/app/.dagster_home
+    command: dagster dev -m orchestration.definitions -h 0.0.0.0 -p 3000
+    depends_on:
+      - pipeline
+
+  # Streamlit dashboard reading from the DuckDB marts.
+  dashboard:
+    build: *build
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+    command: streamlit run dashboard/app.py --server.address 0.0.0.0 --server.port 8501
+    depends_on:
+      - pipeline

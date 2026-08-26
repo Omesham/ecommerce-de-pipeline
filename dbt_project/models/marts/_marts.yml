@@ -1,0 +1,45 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: SCD2 customer dimension. One row per customer per historical state.
+    columns:
+      - name: customer_id
+        data_tests:
+          - not_null
+
+  - name: dim_products
+    description: Product dimension with computed margin.
+    columns:
+      - name: product_id
+        data_tests:
+          - unique
+          - not_null
+
+  - name: fact_order_items
+    description: Grain -- one row per order line item.
+    columns:
+      - name: order_item_id
+        data_tests:
+          - unique
+          - not_null
+      - name: quantity
+        data_tests:
+          - not_null
+
+  - name: fact_orders
+    description: Grain -- one row per order.
+    columns:
+      - name: order_id
+        data_tests:
+          - unique
+          - not_null
+      - name: order_revenue
+        data_tests:
+          - not_null
+
+  - name: mart_daily_revenue
+    description: Revenue/margin/AOV rolled up by day and channel. Feeds the dashboard.
+
+  - name: mart_customer_ltv
+    description: Lifetime order count, revenue, and margin per current customer.

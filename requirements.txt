@@ -1,0 +1,10 @@
+dbt-core==1.11.13
+dbt-duckdb==1.11.0
+duckdb==1.5.5
+dagster==1.13.18
+dagster-webserver==1.13.18
+dagster-dbt==0.29.18
+pandas==3.0.2
+Faker==40.36.0
+streamlit==1.62.0
+plotly==7.0.0

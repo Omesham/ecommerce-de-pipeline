@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  pipeline-and-dbt-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate synthetic source data
+        run: python ingestion/generate_source_data.py
+
+      - name: Load raw tables into DuckDB
+        run: python ingestion/load_to_warehouse.py
+
+      - name: dbt snapshot
+        working-directory: dbt_project
+        env:
+          DBT_PROFILES_DIR: .
+        run: dbt snapshot
+
+      - name: dbt build (run + test)
+        working-directory: dbt_project
+        env:
+          DBT_PROFILES_DIR: .
+        run: dbt build
+
+      - name: Upload dbt artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dbt-artifacts
+          path: dbt_project/target/
