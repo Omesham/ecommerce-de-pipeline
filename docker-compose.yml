@@ -15,7 +15,7 @@ services:
       bash -c "
       python ingestion/generate_source_data.py &&
       python ingestion/load_to_warehouse.py &&
-      cd dbt_project && dbt snapshot && dbt build
+      cd dbt_project && dbt build
       "
 
   # Dagster UI for browsing asset lineage, run history, and triggering runs.

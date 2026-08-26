@@ -26,13 +26,7 @@ jobs:
       - name: Load raw tables into DuckDB
         run: python ingestion/load_to_warehouse.py
 
-      - name: dbt snapshot
-        working-directory: dbt_project
-        env:
-          DBT_PROFILES_DIR: .
-        run: dbt snapshot
-
-      - name: dbt build (run + test)
+      - name: dbt build (runs models, snapshots, and tests together in dependency order)
         working-directory: dbt_project
         env:
           DBT_PROFILES_DIR: .

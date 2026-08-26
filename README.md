@@ -84,10 +84,10 @@ pip install -r requirements.txt
 python ingestion/generate_source_data.py
 python ingestion/load_to_warehouse.py
 
-# Transform
+# Transform (dbt build runs models, snapshots, and tests together,
+# in the correct dependency order -- no separate `dbt snapshot` step needed)
 cd dbt_project
-DBT_PROFILES_DIR=. dbt snapshot
-DBT_PROFILES_DIR=. dbt build   # runs models + tests
+DBT_PROFILES_DIR=. dbt build
 cd ..
 
 # Orchestrate (optional -- re-runs everything above via Dagster instead)
