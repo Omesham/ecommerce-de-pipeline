@@ -1,6 +1,6 @@
 # E-Commerce Analytics Pipeline
 
-An end-to-end batch data pipeline that simulates a real e-commerce source system, ingests and models the data through a modern ELT stack, and serves it through an interactive dashboard — orchestrated, tested, containerized, and CI-checked.
+An end-to-end batch data pipeline that simulates a real e-commerce source system, ingests and models the data through a modern ELT stack, and serves it through an interactive dashboard, orchestrated, tested, containerized, and CI-checked.
 
 **Stack:** Python · DuckDB · dbt · Dagster · Streamlit · Docker · GitHub Actions
 
